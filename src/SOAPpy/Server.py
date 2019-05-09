@@ -250,11 +250,6 @@ class SOAPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 parseSOAPRPC(data, header=1, body=1, attrs=1,
                              ignore_ext=self.ignore_ext)
 
-            # print "do_POST: r =", str(r)
-            # print "do_POST: header =", str(header)
-            # print "do_POST: body =", str(body)
-            # print "do_POST: attrs =", str(attrs)
-
             method = r._name
             args = r._aslist()
             kw = r._asdict()
@@ -300,8 +295,6 @@ class SOAPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
             ns = r._ns
 
-            # print "do_POST: ns =", ns
-
             if len(self.path) > 1 and not ns:
                 ns = self.path.replace("/", ":")
                 if ns[0] == ":":
@@ -329,8 +322,6 @@ class SOAPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             else:
                 nsmethod = method
 
-            # print "do_POST: nsmethod =", nsmethod
-
             try:
                 # First look for registered functions
                 if ns in self.server.funcmap and \
@@ -349,10 +340,7 @@ class SOAPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                     # there are none, because the split will return
                     # [method]
 
-                    print "do_POST: ns =", str(ns)
-                    print "do_POST: method =", method
                     f = self.server.objmap[ns]
-                    print "do_POST: f =", str(f)
 
                     # Look for the authorization method
                     if self.server.config.authMethod is not None:
@@ -447,19 +435,15 @@ class SOAPRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                     if type(fr) == type(self) and \
                             isinstance(fr, voidType):
 
-                        # print "\tbuildSOAP 1"
                         resp = buildSOAP(kw={'%sResponse' % method: fr},
                                          encoding=self.server.encoding,
                                          config=self.server.config)
                     else:
-                        # print "\tbuildSOAP 2"
                         resp = buildSOAP(
                             kw={u'%sResponse' % method: {'Result': fr}},
                             encoding=self.server.encoding,
                             config=self.server.config,
                             namespace=ns)
-
-                        # print "\tresp =", str(resp)
 
                     # Clean up _contexts
                     if thread_id in _contexts:
